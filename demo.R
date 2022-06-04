@@ -1,16 +1,17 @@
 library(shiny)
-library(DTedit)
 library(vroom)
 library(bs4Dash)
 library(dplyr)
 library(magrittr)
 library(gargoyle) # NOTE: USE THIS
-library(DT)
 library(tidyr)
 library(stringr)
 library(shinyWidgets) # extra UI elems
 library(reactlog)
+library(base64enc)
 options("gargoyle.talkative" = TRUE) # for debugging
+options(shiny.maxRequestSize = 30*1024^2)
+
 
 reactlog_enable()
 
@@ -52,9 +53,13 @@ imageUI <- function(id) {
             background = "danger",  
             closable = FALSE,
             maximizable = TRUE,
-            fileInput("upload", NULL, buttonLabel = "Upload image", multiple = FALSE),
-            tableOutput("files")
-#            dteditmodUI(ns("pi_table"))
+            sidebar = boxSidebar(
+                id = "ui_sidebar_1",
+                width = 25,
+                fileInput("upload", NULL, buttonLabel = "Upload image", 
+                           accept = "image/png", multiple = FALSE)
+            ),
+            uiOutput("image")
         )
     )
 }
@@ -66,8 +71,22 @@ imageServer <- function(id) {
 
         # Create gargoyle watchers
 #        init("render_table")
-        output$files <- renderTable(imageUi$upload)
 
+        base64_img <- reactive({
+            uploaded_img <- input$upload
+            if(!is.null(uploaded_img)) {
+                dataURI(file = uploaded_img$datapath, mime = "image/png")
+            }
+        })
+
+        output$image <- renderUI({
+            if(!is.null(base64_img())) {
+                tags$div(
+                    tages$img(src = base64_img(), width = "100%"),
+                    style = "width: 400 px;"
+                )
+            }
+        })
 
 
 
