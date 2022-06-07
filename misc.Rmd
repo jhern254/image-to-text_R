@@ -8,6 +8,7 @@ output: html_document
 library(DT)
 library(dplyr)
 library(vroom)
+library(stringr)
 ```
 
 ## Notes:
@@ -113,9 +114,6 @@ got <- sort_names(present)
 
 ```
 
-Michael Thompson, Miranda Li, Alein Chun, Marco Cifuentes, Donell Cohen, Donald Davies, Rachel Fridman, Mandy Law-Huang, Julian Martinez, Soshi Odawara, Ted Rafdal, Dexter Reinoso, Marcus Harrison, Susan Tiffany, Eduardo Genao, Hudson Stuck, Erin Joyce, Van Vu, Michelle Fang, Denise Abcede, Jun Hernandez"
-
-Paul Bouganim, Joanne Chiu, Tod Davis, Jessica Hermosura, Ha Hoang, Jessica Hopkins, Andrew Hudson, Jennifer Kegle, Walter Liem, Susan Mangeno, Lilly Martirosyan, Shad Nicks, Ron Ruckle, Rachel Selmont, Colleen Stalvey
 
 
 testing out image recognition with tesseract
@@ -125,12 +123,22 @@ eng <- tesseract("eng")
 text <- tesseract::ocr("http://jeroen.github.io/images/testocr.png", engine = eng)
 cat(text)
 
-att1<- tesseract::ocr("att1_51722.PNG", engine = eng)
-att2<- tesseract::ocr("att2_51722.PNG", engine = eng)
+eng <- tesseract("eng")
+att1<- tesseract::ocr("images/att1_51722.PNG", engine = eng)
+att2<- tesseract::ocr("images/att2_51722.PNG", engine = eng)
 cat(att1)
 cat(att2)
 
 length(att1)
+att1
+
+# put in fn
+test <- str_replace_all(att1, "[\\n]", ",")
+test <- unlist(strsplit(test, ","))
+ignore_vals <- c("", "Host", " me", "Cohost")
+clean <- setdiff(test, ignore_vals)
+
+sort_names(clean)
 
 
 ```
