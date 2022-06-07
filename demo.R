@@ -47,7 +47,7 @@ imageUI <- function(id) {
 #            actionButton(ns("table_button"), "Render table")
 #        ),
         box(
-            title = "Sort list",
+            title = "Upload your image!",
             width = 12,         
             solidHeader = TRUE,
             background = "primary",  
@@ -56,15 +56,36 @@ imageUI <- function(id) {
             sidebar = boxSidebar(
                 id = "ui_sidebar_1",
                 width = 25,
-                actionButton(ns("reset"), "Reset image")
+                actionButton(ns("reset_1"), "Reset image")
             ),
             fileInput(ns("upload"), "Upload image (.png)", 
                        accept = "image/png", multiple = FALSE),
             imageOutput(ns("image"))
         ),
         fluidRow(
-            h1("image!"),
+            h1("List!"),
 #            imageOutput(ns("image"))
+        ),
+        box(
+            title = "Sort list",
+            width = 12,         
+            solidHeader = TRUE,
+            background = "primary",  
+            closable = FALSE,
+            maximizable = TRUE,
+            sidebar = boxSidebar(
+                id = "ui_sidebar_2",
+                width = 25,
+                actionButton(ns("reset_2"), "Reset selection"),
+                actionButton(ns("hidden"), "")
+            ),
+            multiInput(ns("list_order"), "Select sort order",
+                       choices = (c("DQMWG", "Admissions", "HID", "EDW")), # TODO: Add update to add more hidden options
+                       selected = NULL,
+                       options = list(limit = 1) # based on JS
+                       # TODO: Add reset button
+            ),
+            textOutput(ns("results"))
         )
     )
 }
@@ -95,20 +116,16 @@ imageServer <- function(id) {
 #                message("no image")
 #            }
         }) 
-#        bindEvent(input$upload, ignoreNULL = FALSE, ignoreInit = TRUE)
 
         observeEvent(input$upload, {
             # check this
             trigger("render_img")
         
             if (TRUE) {
-#                message("uploaded image: ", base64()$uploaded_img)
 #                message("uploaded image: ", print(base64()))
                 message("uploaded image")
             }
 
-
-#            uploaded_img <- input$upload
 
             # ez way
             if (TRUE) {
@@ -125,17 +142,41 @@ imageServer <- function(id) {
                     )
                 }, deleteFile = FALSE)
             }
-
-
         })
 
 
-
-
-        observeEvent(input$reset, {
-            message("button clicked")
+        observeEvent(input$reset_1, {
+            message("reset_1 button clicked")
             output$image <- NULL
         })
+
+
+# ----------------------------------------
+# sorter
+
+        # TODO: Fix
+        observeEvent(input$reset_2, {
+            message("reset_2 button clicked")
+            updateMultiInput(
+                session = session,
+                inputId = "list_order",
+                selected = NULL
+            )
+        })
+
+        # buggy 
+        observeEvent(input$hidden, {
+            message("hidden button clicked")
+            updateMultiInput(
+                session = session,
+                inputId = "list_order",
+                choices = (c("DQMWG", "Admissions", "HID", "EDW", "Harry Potter", 
+                             "The Office", "Alpahbetical"))
+            )
+        })
+
+        output$results <- renderText({input$list_order})
+
 
 
 
@@ -190,5 +231,18 @@ server = function(input, output, session) {
 )
 runApp(app, port=7777)
 }
+
+
+# TODO: 
+# Add logging package
+# split into package
+# turn into golem
+# add testthat
+# add reset button for list options in sidebar
+# text box for people to add in own order
+
+# add confirm image button to upload, then update to minimize box and 
+# show next box. Should be linear UI
+# maybe use renderUI? that can solve the multiInput not reseting, good practice too
 
 
