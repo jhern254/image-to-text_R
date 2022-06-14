@@ -9,6 +9,7 @@ library(stringr)
 library(shinyWidgets) # extra UI elems
 library(reactlog)
 library(base64enc)
+library(tesseract)
 options("gargoyle.talkative" = TRUE) # for debugging
 options(shiny.maxRequestSize = 30*1024^2)
 
@@ -20,6 +21,7 @@ reactlog_enable()
 
 
 # make df
+
 #df_orig <- data.frame(df_tibble)
 #df_orig$salary_hourly <- as.numeric(df_orig$salary_hourly)
 
