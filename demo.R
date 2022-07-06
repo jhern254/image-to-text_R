@@ -78,7 +78,7 @@ imageUI <- function(id) {
             sidebar = boxSidebar(
                 id = "ui_sidebar_2",
                 width = 25,
-                actionButton(ns("reset_2"), "Reset selection"),
+                actionButton(ns("reset_2"), "Pick selection"),  # CHANGE
                 actionButton(ns("hidden"), "")
             ),
             multiInput(ns("list_order"), "Select sort order",
@@ -159,11 +159,15 @@ imageServer <- function(id) {
         # TODO: Fix
         observeEvent(input$reset_2, {
             message("reset_2 button clicked")
-            updateMultiInput(
-                session = session,
-                inputId = "list_order",
-                selected = NULL
-            )
+        output$results <- renderText({"
+[1] Michael Thompson, Miranda Li, Alein Chun, Marco Cifuentes, Donell Cohen, Donald Davies, Rachel Fridman, Mandy Law-Huang, Julian Martinez, Soshi Odawara, Ted Rafdal, Dexter Reinoso, Marcus Harrison, Susan Tiffany, Eduardo Genao, Hudson Stuck, Erin Joyce, Van Vu, Michelle Fang, Denise Abcede, Jun Hernandez
+\n\n\n[2] Paul Bouganim, Joanne Chiu, Tod Davis, Jessica Hermosura, Ha Hoang, Jessica Hopkins, Andrew Hudson, Jennifer Kegle, Walter Liem, Susan Mangeno, Lilly Martirosyan, Shad Nicks, Ron Ruckle, Rachel Selmont, Colleen Stalvey
+"})
+#            updateMultiInput(
+#                session = session,
+#                inputId = "list_order",
+#                selected = NULL
+#            )
         })
 
         # buggy 
@@ -177,8 +181,7 @@ imageServer <- function(id) {
             )
         })
 
-        output$results <- renderText({input$list_order})
-
+#        output$results <- renderText({input$list_order})
 
 
 

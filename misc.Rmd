@@ -93,14 +93,17 @@ sort_names <- function(present, ordered = c()) {
                  "Walter Liem", "Susan Mangeno", "Julian Martinez", "Lilly Martirosyan",
                  "Shad Nicks", "Soshi Odawara", "Ted Rafdal", "Dexter Reinoso",
                  "Marcus Harrison", "Ron Ruckle", "Rachel Selmont", "Colleen Stalvey", 
-                 "Susan Tiffany", "Eduardo Genao", "Hudson Stuck", "Erin Joyce", 
-                 "Van Vu", "Michelle Fang", "Denise Abcede", "Jun Hernandez"
+                 "Susan Tiffany", "Hudson Stuck", "Erin Joyce", "Van Vu", "Michelle Fang", 
+                 "Jun Hernandez", "Janette Zetina", "Angelene Estiandan"
     )
     sorted <- (present[order(match(present, ordered))]) 
     absent <- setdiff(ordered, sorted)
 
     out <- c(paste(sorted, collapse = ", "), paste(absent, collapse = ", "))
     out
+
+# TODO: add unrecognized names to another vector
+# TODO: Add chair, co-chair titles
 }
 
 # unit test
@@ -116,16 +119,19 @@ got <- sort_names(present)
 
 
 
+
 testing out image recognition with tesseract
+
 ```{r}
+
 library(tesseract)
 eng <- tesseract("eng")
 text <- tesseract::ocr("http://jeroen.github.io/images/testocr.png", engine = eng)
 cat(text)
 
 eng <- tesseract("eng")
-att1<- tesseract::ocr("images/att1_51722.PNG", engine = eng)
-att2<- tesseract::ocr("images/att2_51722.PNG", engine = eng)
+att1<- tesseract::ocr("images/att1_062122.PNG", engine = eng)
+att2<- tesseract::ocr("images/att2_062122.PNG", engine = eng)
 cat(att1)
 cat(att2)
 
@@ -138,11 +144,53 @@ test <- unlist(strsplit(test, ","))
 ignore_vals <- c("", "Host", " me", "Cohost")
 clean <- setdiff(test, ignore_vals)
 
-sort_names(clean)
+#sort_names(clean)
+
+
+
+
+image_rec <- function(img_path) {
+    eng <- tesseract::tesseract("eng")
+    names <- c()
+
+    # change to map
+    for (img in img_path) {
+        att <- tesseract::ocr(img, engine = eng)
+        names <- c(names, att)
+    } 
+
+    names <- paste(names,collapse = ",")
+    names <- str_replace_all(names, "[\\n]", ",")
+    names <- unlist(strsplit(names, ","))
+
+    ignore_vals <- c("", "Host", " me", "Cohost")
+    clean <- setdiff(names, ignore_vals)
+    
+}
+
+
+
+
+# fix
+path <- c("images/att1_062122.PNG", "images/att2_062122.PNG")
+
+got <- image_rec(path)
+sort_names(got)
 
 
 ```
 omg this actually works 
+
+
+
+```
+# fn to convert names to 
+# using R way, make df to map names, then join
+
+# import csv table 
+# combine into names fn?
+```
+
 
 
 
